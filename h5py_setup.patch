@@ -1,0 +1,11 @@
+--- setup.py.old    2015-06-03 07:28:03.381406796 -0700
++++ setup.py    2015-06-03 07:28:13.447242256 -0700
+@@ -295,7 +295,7 @@ else:
+ if any('--' + opt in sys.argv for opt in Distribution.display_option_names + ['help']):
+     setup_requires = []
+ else:
+-    setup_requires = ['numpy >=1.0.1']
++    setup_requires = []
+
+ setup(
+   name = 'h5py',
