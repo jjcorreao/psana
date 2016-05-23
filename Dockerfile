@@ -28,43 +28,29 @@ RUN sh /reg/g/psdm/site-setup.sh /reg/g/psdm
 ENV SIT_ROOT=/reg/g/psdm
 ENV PATH=/reg/g/psdm/sw/dist/apt-rpm/rhel6-x86_64/bin:$PATH
 ENV APT_CONFIG=/reg/g/psdm/sw/dist/apt-rpm/rhel6-x86_64/etc/apt/apt.conf
+#RUN apt-get -y update; apt-get -y install \
+#            psdm-release-ana-0.17.4-x86_64-rhel6-gcc44-opt &&\
+#    ln -s /reg/g/psdm/sw/releases/ana-0.17.4 \
+#          /reg/g/psdm/sw/releases/ana-current
 RUN apt-get -y update; apt-get -y install \
-            psdm-release-ana-0.17.4-x86_64-rhel6-gcc44-opt &&\
-    ln -s /reg/g/psdm/sw/releases/ana-0.17.4 \
+            psdm-release-ana-0.17.30-x86_64-rhel6-gcc44-opt &&\
+    ln -s /reg/g/psdm/sw/releases/ana-0.17.30 \
           /reg/g/psdm/sw/releases/ana-current
 
 # use old HDF5 (1.8.6) for compatibility with cctbx.xfel
 ADD https://www.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8.6/bin/linux-x86_64/hdf5-1.8.6-linux-x86_64-shared.tar.gz .
-RUN rm -fr /reg/g/psdm/sw/external/hdf5/* &&\
-    tar -xf hdf5-1.8.6-linux-x86_64-shared.tar.gz &&\
+#COPY ./hdf5-1.8.6-linux-x86_64-shared.tar.gz .
+RUN tar -xf hdf5-1.8.6-linux-x86_64-shared.tar.gz &&\
     mkdir -p /reg/g/psdm/sw/external/hdf5/1.8.6 &&\
     mv hdf5-1.8.6-linux-x86_64-shared \
-       /reg/g/psdm/sw/external/hdf5/1.8.6/x86_64-rhel6-gcc44-opt &&\
-    ln -s /reg/g/psdm/sw/external/hdf5/1.8.6 \
-          /reg/g/psdm/sw/external/hdf5/1.8.15a &&\
-    ln -s /reg/g/psdm/sw/external/hdf5/1.8.15a/x86_64-rhel6-gcc44-opt/lib/libhdf5_cpp.so.6 \
-          /reg/g/psdm/sw/external/hdf5/1.8.15a/x86_64-rhel6-gcc44-opt/lib/libhdf5_cpp.so.10 &&\
-    ln -s /reg/g/psdm/sw/external/hdf5/1.8.15a/x86_64-rhel6-gcc44-opt/lib/libhdf5_cpp.so.6.0.5 \
-          /reg/g/psdm/sw/external/hdf5/1.8.15a/x86_64-rhel6-gcc44-opt/lib/libhdf5_cpp.so.10.0.1 &&\
-    ln -s /reg/g/psdm/sw/external/hdf5/1.8.15a/x86_64-rhel6-gcc44-opt/lib/libhdf5_hl_cpp.so.6 \
-          /reg/g/psdm/sw/external/hdf5/1.8.15a/x86_64-rhel6-gcc44-opt/lib/libhdf5_hl_cpp.so.10 &&\
-    ln -s /reg/g/psdm/sw/external/hdf5/1.8.15a/x86_64-rhel6-gcc44-opt/lib/libhdf5_hl_cpp.so.6.0.5 \
-          /reg/g/psdm/sw/external/hdf5/1.8.15a/x86_64-rhel6-gcc44-opt/lib/libhdf5_hl_cpp.so.10.0.1 &&\
-    ln -s /reg/g/psdm/sw/external/hdf5/1.8.15a/x86_64-rhel6-gcc44-opt/lib/libhdf5_hl.so.6 \
-          /reg/g/psdm/sw/external/hdf5/1.8.15a/x86_64-rhel6-gcc44-opt/lib/libhdf5_hl.so.10 &&\
-    ln -s /reg/g/psdm/sw/external/hdf5/1.8.15a/x86_64-rhel6-gcc44-opt/lib/libhdf5_hl.so.6.0.5 \
-          /reg/g/psdm/sw/external/hdf5/1.8.15a/x86_64-rhel6-gcc44-opt/lib/libhdf5_hl.so.10.0.1 &&\
-    ln -s /reg/g/psdm/sw/external/hdf5/1.8.15a/x86_64-rhel6-gcc44-opt/lib/libhdf5.so.6 \
-          /reg/g/psdm/sw/external/hdf5/1.8.15a/x86_64-rhel6-gcc44-opt/lib/libhdf5.so.10 &&\
-    ln -s /reg/g/psdm/sw/external/hdf5/1.8.15a/x86_64-rhel6-gcc44-opt/lib/libhdf5.so.6.0.5 \
-          /reg/g/psdm/sw/external/hdf5/1.8.15a/x86_64-rhel6-gcc44-opt/lib/libhdf5.so.10.0.1
+       /reg/g/psdm/sw/external/hdf5/1.8.6/x86_64-rhel6-gcc44-opt
 
 # build myrelease
 RUN cd /reg/g &&\
     source /reg/g/psdm/etc/ana_env.sh &&\
-    newrel ana-0.17.4 myrelease &&\
+    newrel ana-0.17.30 myrelease &&\
     cd myrelease &&\
-    sit_setup.sh -orhel6 -cgcc44 &&\
+    source sit_setup.sh &&\
     newpkg my_ana_pkg
 
 # copy cctbx.xfel from local tarball
@@ -75,14 +61,15 @@ RUN cd /reg/g/cctbx &&\
 
 # build cctbx.xfel
 # make needs to be run multiple times to ensure complete build (bug)
-ENV CPATH=/reg/g/psdm/sw/external/openmpi/1.8.6/x86_64-rhel6-gcc44-opt/include
-ENV LD_LIBRARY_PATH=/reg/g/psdm/sw/external/openmpi/1.8.6/x86_64-rhel6-gcc44-opt/lib
+ENV CPATH=/reg/g/psdm/sw/releases/ana-0.17.30/arch/x86_64-rhel6-gcc44-opt/geninc
+#:/reg/g/psdm/sw/releases/ana-0.17.30/arch/x86_64-rhel6-gcc44-opt/geninc/hdf5
+ENV LD_LIBRARY_PATH=/reg/g/psdm/sw/releases/ana-0.17.30/arch/x86_64-rhel6-gcc44-opt/lib
 RUN source /reg/g/psdm/etc/ana_env.sh &&\
     cd /reg/g/myrelease &&\
-    sit_setup.sh -orhel6 -cgcc44 &&\
+    sit_setup.sh &&\
     cd /reg/g/cctbx &&\
     python ./modules/cctbx_project/libtbx/auto_build/bootstrap.py build \
-    --builder=xfel --with-python=`which python` --nproc=8 &&\
+    --builder=dials --with-python=`which python` --nproc=8 &&\
     cd build &&\
     make -j 8 &&\
     make -j 8
@@ -90,7 +77,7 @@ RUN source /reg/g/psdm/etc/ana_env.sh &&\
 # finish building myrelease
 RUN source /reg/g/psdm/etc/ana_env.sh &&\
     cd /reg/g/myrelease &&\
-    source /reg/g/psdm/bin/sit_setup.sh -orhel6 -cgcc44 &&\
+    source /reg/g/psdm/bin/sit_setup.sh &&\
     source /reg/g/cctbx/build/setpaths.sh &&\
     cd my_ana_pkg &&\
     ln -s /reg/g/cctbx/modules/cctbx_project/xfel/cxi/cspad_ana src &&\
@@ -98,5 +85,5 @@ RUN source /reg/g/psdm/etc/ana_env.sh &&\
     scons
 
 # recreate /reg/d directories for data
-RUN mkdir -p /reg/d/psdm/cxi &&\
-    ln -s /reg/d/psdm/cxi /reg/d/psdm/CXI
+# RUN mkdir -p /reg/d/psdm/cxi &&\
+#     ln -s /reg/d/psdm/cxi /reg/d/psdm/CXI
