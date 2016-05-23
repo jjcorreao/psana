@@ -15,9 +15,9 @@ RUN yum -y install alsa-lib atk compat-libf2c-34 fontconfig freetype gsl \
     libXrender libXtst libXxf86vm mesa-libGL mesa-libGLU gtk2 \
     xorg-x11-fonts-Type1 xorg-x11-fonts-base xorg-x11-fonts-100dpi \
     xorg-x11-fonts-truetype xorg-x11-fonts-75dpi xorg-x11-fonts-misc \
-    tar xz which gcc gcc-c++ mysql &&\
-    ln -s /usr/lib64/mysql/libmysqlclient.so.16 \
-          /usr/lib64/mysql/libmysqlclient.so
+    tar xz which gcc gcc-c++ mysql
+#    ln -s /usr/lib64/mysql/libmysqlclient.so.16 \
+#          /usr/lib64/mysql/libmysqlclient.so
 
 # install psdm
 # https://confluence.slac.stanford.edu/display/PSDM/Software+Distribution
