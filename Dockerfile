@@ -15,7 +15,7 @@ RUN yum -y install alsa-lib atk compat-libf2c-34 fontconfig freetype gsl \
     libXrender libXtst libXxf86vm mesa-libGL mesa-libGLU gtk2 \
     xorg-x11-fonts-Type1 xorg-x11-fonts-base xorg-x11-fonts-100dpi \
     xorg-x11-fonts-truetype xorg-x11-fonts-75dpi xorg-x11-fonts-misc \
-    tar xz which gcc gcc-c++ mysql
+    tar xz which gcc gcc-c++ mysql libibverbs
 #    ln -s /usr/lib64/mysql/libmysqlclient.so.16 \
 #          /usr/lib64/mysql/libmysqlclient.so
 
@@ -85,5 +85,5 @@ RUN source /reg/g/psdm/etc/ana_env.sh &&\
     scons
 
 # recreate /reg/d directories for data
-# RUN mkdir -p /reg/d/psdm/cxi &&\
-#     ln -s /reg/d/psdm/cxi /reg/d/psdm/CXI
+RUN mkdir -p /reg/d/psdm/cxi &&\
+    mkdir -p /reg/d/psdm/CXI
